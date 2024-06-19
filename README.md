@@ -53,10 +53,10 @@ Multimodal Large Language Models (MLLMs) have demonstrated exceptional capabilit
 If you use **SeTok** in your project, please kindly cite:
 
 ```bibtex
-@articles{Wu2024setok,
+@article{wu2024towards,
   title={Towards Semantic Equivalence of Tokenization in Multimodal LLM},
-  author={Shengqiong Wu, Hao Fei, Hanwang Zhang, Tat-Seng Chua, Shuicheng Yan},
-  journal = {CoRR},
+  author={Wu, Shengqiong and Fei, Hao and Li, Xiangtai and Ji, Jiayi and Zhang, Hanwang and Chua, Tat-Seng and Yan, Shuicheng},
+  journal={arXiv preprint arXiv:2406.05127},
   year={2024}
 }
 ```
