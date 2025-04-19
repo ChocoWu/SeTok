@@ -46,7 +46,88 @@ The proposed MLLM (**Setokim**) equipped with SeTok significantly demonstrates s
 ![avatar](./assets/framework.jpeg)
 
 
-## Citation
+
+
+## 📂 Getting Start
+
+First, prepare the code and set up the environment:
+```
+# download the code
+git clone https://github.com/ChocoWu/SeTok.git
+cd SeTok
+
+# install
+conda creat -n setok python=3.10 -y
+conda activate setok
+pip install --upgrade pip
+pip install -e .
+```
+
+### 📚 Preparing Data
+
+To begin, please prepare the dataset. All datasets should be placed under the [`data/`](./data) directory, with the following structure:
+```
+data
+  - ImageNet-1K
+    - data.json
+    - images
+      - xxx.jpg
+  - OpenImages
+  - ALLaVA
+  - GQA
+    - data.json
+    - images
+      - xxx.jpg
+  - OK-VQA
+  - ...
+  - InstructPix2Pix
+  - Magicbrush
+```
+For details on how each dataset is processed, please refer to the following scripts:
+
+- [`TextImagePairDataset`](./src/dataset/pairDataset.py)
+- [`EditingDataset`](./src/dataset/editDataset.py)
+- [`InstructionTuningDataset`](./src/dataset/instructDataset.py)
+
+
+### 🚀 Training
+Our training receipts involves three stages. 
+
+- **Stage-1: Setok tokenizer training**. We use ImageNet-1K for reconstruction learning and OpenImages for both reconstruction and alignment learning. 
+```
+# In [train_mem.py], activate Setok training:
+
+from train_setok import train
+train(attn_implementation="flash_attention_2")
+
+# Set the hyper-parameters in [train_setok.sh].
+bash  train_setok.sh
+```
+Make sure the dataset paths are correctly set in your config file or environment variables.
+
+
+- **Stage-2: Multimodal Pretraining**. In this stage, we focus on enhancing the alignment between text and image. We employ massive multimodal data, including ImageNet-1K and 28M text-image pair dataset, to train our model for conditional image generation and image captioning.
+```
+# In [train_mem.py], activate Setok training:
+
+from train_setokim import train
+train(attn_implementation="flash_attention_2")
+
+# Set the hyper-parameters in [pretrain_mm_proj.sh].
+bash  pretrain_mm_proj.sh
+
+```
+
+- **Stage-3: Instruction Tuning**. Building upon the pretrained weights, we further perform multimodal instruction tuning with both public datasets covering
+multimodal instruction datasets, fine-grained visual QA, and etc.
+```
+# Set the hyper-parameters in [finetune.sh].
+bash  finetune.sh
+```
+
+
+
+## ✨ Citation
 
 If you use **SeTok** in your project, please kindly cite:
 
@@ -54,7 +135,12 @@ If you use **SeTok** in your project, please kindly cite:
 @article{wu2024towards,
   title={Towards Semantic Equivalence of Tokenization in Multimodal LLM},
   author={Wu, Shengqiong and Fei, Hao and Li, Xiangtai and Ji, Jiayi and Zhang, Hanwang and Chua, Tat-Seng and Yan, Shuicheng},
-  journal={arXiv preprint arXiv:2406.05127},
-  year={2024}
+  publisher={ICLR},
+  year={2025}
 }
 ```
+
+## Acknowledgments
+
+This work is heavily built based on [LLaVA](https://github.com/haotian-liu/LLaVA), [GroupViT](https://github.com/NVlabs/GroupViT), [MAR](https://github.com/LTH14/mar), [Blip-2](https://github.com/salesforce/LAVIS). 
+Thanks to all the authors for their great work.
